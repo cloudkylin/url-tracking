@@ -1,6 +1,9 @@
+var path = require('path');
 module.exports = {
-    assetsDir: '../static',
-    outputDir: '../templates',
+    publicPath: './',
+    assetsDir: 'static',
+    indexPath: path.resolve(__dirname, '../templates/' + '/index.html'),
+    outputDir: path.resolve(__dirname, '../static/'),
 
     lintOnSave: false,
     devServer: {

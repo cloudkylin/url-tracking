@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.8245b446353b79194c79bb74b114a99a.js"
+  "precache-manifest.86d8939ee71d1d146d399bb37bd5c429.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "url-tracking-view"});

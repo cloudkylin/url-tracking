@@ -1,13 +1,14 @@
 <template>
     <div>
         <el-row class="header">
-            <el-col :span="12">
-                <h1>网址重定向追踪</h1>
+            <el-col :span="8">
+                <h1>Web工具箱</h1>
             </el-col>
-            <el-col :span="12">
+            <el-col tag="nav" :span="16">
                 <el-menu :default-active="activeMenu" mode="horizontal" @select="handleSelect" class="menu">
-                    <el-menu-item index="网址重定向追踪">工具</el-menu-item>
-                    <el-menu-item index="https://cloudkylin.me/">关于我</el-menu-item>
+                    <el-menu-item v-for="menu in menuList" :key="menu.path" :index="menu.path">
+                        {{menu.name}}
+                    </el-menu-item>
                 </el-menu>
             </el-col>
         </el-row>
@@ -20,29 +21,26 @@
         data() {
             return {
                 activeMenu: '',
-                menuItem: []
+                menuList: []
             }
         },
         mounted() {
-            let thisPath = this.$route.fullPath;
-            for (let route of this.$router.options.routes) {
-                if (route.path === thisPath) {
-                    this.activeMenu = route.name;
-                    break;
-                }
-            }
+            this.menuList = this.$router.options.routes[0].children.map(d => {
+                return {...d, path: '/' + d.path}
+            });
+            this.activeMenu = this.$route.path
         },
         methods: {
             handleSelect(val) {
-                if (val.slice(0, 4) === 'http') {
-                    window.open(val);
-                    let activeMenu = this.activeMenu;
-                    this.$nextTick(() => {
-                        this.activeMenu = activeMenu;
-                    })
-                } else {
-                    this.$router.push({name: val})
-                }
+                if (val !== this.activeMenu)
+                    this.$router.push({path: val});
+            }
+        },
+        watch: {
+            '$route.path'(val) {
+                this.$nextTick(() => {
+                    this.activeMenu = val;
+                })
             }
         }
     }
