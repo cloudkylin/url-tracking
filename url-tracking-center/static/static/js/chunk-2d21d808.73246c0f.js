@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21d808"],{d226:function(e,n,r){"use strict";r.r(n);var t=function(){var e=this,n=e.$createElement,r=e._self._c||n;return r("div",[e._v(" 网页未找到 ")])},a=[],c={name:"error-404"},u=c,o=r("2877"),s=Object(o["a"])(u,t,a,!1,null,"a904f41e",null);n["default"]=s.exports}}]);
-//# sourceMappingURL=chunk-2d21d808.73246c0f.js.map
