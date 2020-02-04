@@ -105,4 +105,4 @@ venv.bak/
 
 .DS_Store
 .idea/
-url-tracking-master/master.sqlite
+*.sqlite
