@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, g
 import requests, os, sqlite3, datetime, json
 
 app = Flask(__name__)
-DATABASE = 'center.sqlite'
+DATABASE = 'master.sqlite'
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
 '''Database connect'''
@@ -26,13 +26,11 @@ def insert_server(address, name, service, location, description):
 def update_server(address, name, service, description):
     sql = 'UPDATE server SET name=?,service=?,description=?,update_time=? WHERE address=?'
     time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(time)
     g.db.execute(sql, (name, service, description, time, address))
     g.db.commit()
 
 
 def query_db(query, args=(), one=False):
-    print(args)
     cur = g.db.execute(query, args)
     rv = [dict((cur.description[idx][0], value)
                for idx, value in enumerate(row)) for row in cur.fetchall()]
@@ -73,7 +71,6 @@ def heartbeat():
             sql = 'SELECT * FROM server WHERE address=?'
             server = query_db(sql, [address], one=True)
         except Exception as e:
-            print(e)
             status = False
             message = 'Database update failed'
         else:

@@ -4,8 +4,9 @@
             <el-col :span="24">
                 <div class="card">
                     <el-alert :title="alertElement.title" :type="alertElement.type" show-icon></el-alert>
-                    <el-form ref="form" :model="form" :rules="rules" hide-required-asterisk label-width="80px"
-                             class="card-form">
+                    <el-form ref="form" :model="form" :rules="rules"
+                             hide-required-asterisk @submit.native.prevent
+                             label-width="80px" class="card-form">
                         <el-form-item label="网址 URL" prop="url">
                             <el-input v-model.trim="form.url" clearable></el-input>
                         </el-form-item>

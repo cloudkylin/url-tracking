@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.39b23ef7dd1b9c0aef7df3a5e4e733dc.js"
+  "precache-manifest.7fdef3355f8fdb7abef07764462fdf7f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "url-tracking-client"});
