@@ -1,0 +1,17 @@
+{
+  "name": "url-tracking-slave",
+  "version": "2.0.0",
+  "description": "URL tracking and monitor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CloudKylin",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "puppeteer": "^2.1.0"
+  }
+}
