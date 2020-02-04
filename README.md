@@ -3,6 +3,18 @@ URL跳转追踪
 
 DEMO：[CloudKylin的Web工具箱](http://39.108.110.17:8080)
 
+## 版本记录
+
+### Version 1
+
+> dev-1.1.0
+>
+> - 更新 Master 和 Slave，增加版本记录，并调整 Client 端请求接口；
+> 
+> - 增加 Master 的构建脚本
+>
+> - 修改 Master 的数据库结构，支持版本记录
+
 ## 代码说明
 
 ### url-tracking-client
