@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, g
 import requests, os, sqlite3, datetime, json
 
 app = Flask(__name__)
-DATABASE = 'master.sqlite'
+DATABASE = 'db.sqlite'
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
 '''Database connect'''
