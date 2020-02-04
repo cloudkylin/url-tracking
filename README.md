@@ -5,6 +5,13 @@ DEMO：[CloudKylin的Web工具箱](http://39.108.110.17:8080)
 
 ## 版本记录
 
+### Version 2
+
+> V2 版本截止目前开发进度，仅重写 Slave 端内容，其余部分使用 Version 1 中的开发内容
+>
+> dev-2.0.0
+> - 使用 Node.JS 重写 Slave 端，增加对 JS 和 HTML 跳转的捕获
+
 ### Version 1
 
 > dev-1.1.0
