@@ -1,15 +1,13 @@
 <template>
-    <div>
-        网页未找到
-    </div>
+  <div>
+    网页未找到
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "error-404"
-    }
+export default {
+  name: "error-404"
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
