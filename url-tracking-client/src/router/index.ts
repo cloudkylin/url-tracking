@@ -12,7 +12,7 @@ const routes = [
     children: [
       {
         path: "tools",
-        name: "网址重定向追踪",
+        name: "工具",
         component: () => import("@/views/Tools.vue")
       },
       {

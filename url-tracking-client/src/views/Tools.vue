@@ -25,9 +25,9 @@
                 <el-radio-button label="pc">电脑</el-radio-button>
                 <el-radio-button label="wechat">手机微信</el-radio-button>
                 <el-radio-button label="iphone">iPhone 浏览器</el-radio-button>
-                <el-radio-button label="android"
-                  >Android 浏览器</el-radio-button
-                >
+                <el-radio-button label="android">
+                  Android 浏览器
+                </el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="监测节点" prop="server">
