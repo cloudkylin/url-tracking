@@ -14,7 +14,8 @@ def heartbeat(address, name, service, description='A Slave Service'):
         "address": address,
         "name": name,
         "service": service,
-        "description": description
+        "description": description,
+        "version": "v1"
     }
     try:
         r = requests.post('http://39.108.110.17:8080/v1/master/heartbeat', json=body)

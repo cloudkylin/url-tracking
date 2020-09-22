@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, g
 import requests, os, sqlite3, datetime, json
 
 app = Flask(__name__)
-DATABASE = 'master.sqlite'
+DATABASE = 'db.sqlite'
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
 '''Database connect'''
@@ -17,16 +17,16 @@ def before_request():
     g.db = connect_db()
 
 
-def insert_server(address, name, service, location, description):
-    sql = 'INSERT INTO server (address, name, service, location, description) VALUES (?,?,?,?,?)'
+def insert_server(address, name, service, location, description, version):
+    sql = 'INSERT INTO server (address, name, service, location, description, version) VALUES (?,?,?,?,?,?)'
     g.db.execute(sql, (address, name, service, location, description))
     g.db.commit()
 
 
-def update_server(address, name, service, description):
-    sql = 'UPDATE server SET name=?,service=?,description=?,update_time=? WHERE address=?'
+def update_server(address, name, service, description, version):
+    sql = 'UPDATE server SET name=?,service=?,description=?,version=?,update_time=? WHERE address=?'
     time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    g.db.execute(sql, (name, service, description, time, address))
+    g.db.execute(sql, (name, service, description, version, time, address))
     g.db.commit()
 
 
@@ -62,6 +62,7 @@ def heartbeat():
         address = request.get_json()['address']
         name = request.get_json()['name']
         service = request.get_json()['service']
+        version = request.get_json()['version']
     except:
         status = False
         message = 'Missing required request parameters'
@@ -82,7 +83,7 @@ def heartbeat():
                 r = requests.get('https://ip.cn', params={'ip': ip}, headers={'User-Agent': 'curl'})
                 location = r.json()['country']
                 try:
-                    insert_server(address, name, service, location, description)
+                    insert_server(address, name, service, location, description, version)
                     message = 'Success'
                 except:
                     status = False
@@ -93,7 +94,7 @@ def heartbeat():
                 except:
                     description = server['description']
                 try:
-                    update_server(address, name, service, description)
+                    update_server(address, name, service, description, version)
                     message = 'Success'
                 except:
                     status = False
@@ -116,6 +117,8 @@ def servers_info():
                 'name': server['name'],
                 'location': server['location'],
                 'description': server['description'],
+                'version': server['version'],
+                'service': service,
                 'updateTime': server['update_time']
             })
             if 'trackingUrl' in service:
