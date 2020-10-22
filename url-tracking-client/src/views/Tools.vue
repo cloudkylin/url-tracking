@@ -7,7 +7,7 @@
             :title="alertElement.title"
             :type="alertElement.type"
             show-icon
-          ></el-alert>
+          />
           <el-form
             ref="form"
             :model="form"
@@ -120,7 +120,7 @@ export default {
     };
   },
   mounted() {
-    this.updateServersInfo();
+    this.updateServersList(this.$store.getters.trackingUrl);
   },
   methods: {
     // 检查并整理时间
@@ -138,14 +138,10 @@ export default {
       else return { status: true, time, day: 0 };
     },
     // 更新监测节点信息
-    updateServersInfo() {
-      const info = localStorage.getItem("trackingUrl");
-      if (info) {
-        this.serversInfo = JSON.parse(info);
-        if (this.serversInfo.length !== 0) {
-          this.form.server = this.serversInfo[0].addr;
-        }
-        const updateTime = localStorage.getItem("updateTime");
+    updateServersList(list) {
+      if (list) {
+        this.serversInfo = list;
+        const updateTime = this.$store.state.updateTime;
         if (updateTime) {
           const check = this.timeCheck(updateTime);
           if (check.status) {

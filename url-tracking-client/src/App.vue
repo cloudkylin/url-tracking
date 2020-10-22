@@ -12,32 +12,35 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
+import global from "@/apis/global";
 
 @Component({ components: { Header } })
 export default class App extends Vue {
   @Prop() private msg!: string;
 
   mounted() {
-    fetch("/v1/master/serversInfo", {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      })
-    })
-      .then(res => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          throw new Error("请求失败，请重试");
-        }
-      })
+    this.updateServers();
+  }
+
+  // 更新Slave服务器信息
+  updateServers(): void {
+    // 加载缓存
+    const updateTime = localStorage.getItem("updateTime");
+    const servers = localStorage.getItem("servers");
+    if (updateTime && servers) {
+      this.$store.dispatch("updateServers", { updateTime, servers });
+    }
+
+    // 获取更新
+    global
+      .getServers()
       .then(res => {
         if (res.status) {
-          const updateTimeDate = new Date();
-          const updateTime: string = updateTimeDate.valueOf() + "";
-          localStorage.setItem("updateTime", updateTime);
-          const trackingUrl = JSON.stringify(res.data.trackingUrl);
-          localStorage.setItem("trackingUrl", trackingUrl);
+          const updateTime = new Date().valueOf();
+          this.$store.dispatch("updateServers", {
+            updateTime,
+            servers: res.data
+          });
         } else {
           const msg = res.message
             ? res.message
@@ -66,6 +69,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
+
 header {
   position: fixed;
   top: 0;
@@ -74,29 +78,8 @@ header {
   z-index: 1000;
   background: #fff;
 }
+
 main {
   margin-top: 60px;
 }
 </style>
-<!--<style lang="scss">-->
-<!--  #app {-->
-<!--    font-family: 'Avenir', Helvetica, Arial, sans-serif;-->
-<!--    -webkit-font-smoothing: antialiased;-->
-<!--    -moz-osx-font-smoothing: grayscale;-->
-<!--    text-align: center;-->
-<!--    color: #2c3e50;-->
-<!--  }-->
-
-<!--  #nav {-->
-<!--    padding: 30px;-->
-
-<!--    a {-->
-<!--      font-weight: bold;-->
-<!--      color: #2c3e50;-->
-
-<!--      &.router-link-exact-active {-->
-<!--        color: #42b983;-->
-<!--      }-->
-<!--    }-->
-<!--  }-->
-<!--</style>-->
