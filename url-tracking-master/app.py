@@ -1,32 +1,41 @@
+import datetime
+import json
+import os
+import requests
+import sqlite3
 from flask import Flask, request, jsonify, render_template, g
-import requests, os, sqlite3, datetime, json
+from flask_restful import Api
 
 app = Flask(__name__)
-DATABASE = 'db.sqlite'
+api = Api(app)
+DATABASE = 'master.sqlite'
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
 '''Database connect'''
 
 
-def connect_db():
-    return sqlite3.connect(DATABASE)
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
 
 
 @app.before_request
 def before_request():
-    g.db = connect_db()
+    g.db = get_db()
 
 
-def insert_server(address, name, service, location, description, version):
+def insert_server(address: str, name: str, service: list, location: str, description: str, version: str):
     sql = 'INSERT INTO server (address, name, service, location, description, version) VALUES (?,?,?,?,?,?)'
-    g.db.execute(sql, (address, name, service, location, description))
+    g.db.execute(sql, (address, name, json.dumps(service), location, description, version))
     g.db.commit()
 
 
-def update_server(address, name, service, description, version):
+def update_server(address: str, name: str, service: list, description: str, version: str):
     sql = 'UPDATE server SET name=?,service=?,description=?,version=?,update_time=? WHERE address=?'
     time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    g.db.execute(sql, (name, service, description, version, time, address))
+    g.db.execute(sql, (name, json.dumps(service), description, version, time, address))
     g.db.commit()
 
 
@@ -39,7 +48,8 @@ def query_db(query, args=(), one=False):
 
 @app.teardown_request
 def teardown_request(exception):
-    if hasattr(g, 'db'):
+    db = getattr(g, '_database', None)
+    if db is not None:
         g.db.close()
 
 
@@ -54,25 +64,23 @@ def index():
 '''Master-side'''
 
 
+# 注册Slave服务器
 @app.route('/v1/master/heartbeat', methods=['POST'])
 def heartbeat():
-    status = True
-    message = ''
+    status = False
     try:
         address = request.get_json()['address']
         name = request.get_json()['name']
         service = request.get_json()['service']
         version = request.get_json()['version']
     except:
-        status = False
         message = 'Missing required request parameters'
     else:
         ip = request.remote_addr
         try:
             sql = 'SELECT * FROM server WHERE address=?'
             server = query_db(sql, [address], one=True)
-        except Exception as e:
-            status = False
+        except:
             message = 'Database update failed'
         else:
             if server is None:
@@ -80,14 +88,18 @@ def heartbeat():
                     description = request.get_json()['description']
                 except:
                     description = ''
-                r = requests.get('https://ip.cn', params={'ip': ip}, headers={'User-Agent': 'curl'})
-                location = r.json()['country']
+                try:
+                    r = requests.get('https://ip.cn', params={'ip': ip}, headers={'User-Agent': 'curl'})
+                    location = r.json()['country']
+                except:
+                    location = 'unknown'
                 try:
                     insert_server(address, name, service, location, description, version)
-                    message = 'Success'
                 except:
-                    status = False
                     message = 'Database insert failed'
+                else:
+                    status = True
+                    message = 'Success'
             else:
                 try:
                     description = request.get_json()['description']
@@ -95,25 +107,25 @@ def heartbeat():
                     description = server['description']
                 try:
                     update_server(address, name, service, description, version)
-                    message = 'Success'
                 except:
-                    status = False
                     message = 'Database update failed'
+                else:
+                    status = True
+                    message = 'Success'
     return jsonify({'status': status, 'message': message})
 
 
-@app.route('/v1/master/serversInfo', methods=['GET'])
+# 获取/添加Slave服务器信息
+@app.route('/v1/master/serversInfo', methods=['GET', 'POST'])
 def servers_info():
-    status = True
-    message = ''
+    status = False
     serversInfo = []
-    trackingUrl = []
     try:
         sql = 'SELECT * FROM server'
         for server in query_db(sql):
             service = json.loads(server['service'])
             serversInfo.append({
-                'addr': server['address'],
+                'address': server['address'],
                 'name': server['name'],
                 'location': server['location'],
                 'description': server['description'],
@@ -121,17 +133,11 @@ def servers_info():
                 'service': service,
                 'updateTime': server['update_time']
             })
-            if 'trackingUrl' in service:
-                trackingUrl.append({
-                    'addr': server['address'],
-                    'name': server['name']
-                })
+        status = True
         message = 'Success'
     except:
-        status = False
         message = 'Database error'
-    data = {'serversInfo': serversInfo, 'trackingUrl': trackingUrl}
-    return jsonify({'status': status, 'data': data, 'message': message})
+    return jsonify({'status': status, 'data': serversInfo, 'message': message})
 
 
 if __name__ == '__main__':
