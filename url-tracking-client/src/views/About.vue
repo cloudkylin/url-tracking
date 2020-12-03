@@ -7,10 +7,10 @@
       :style="{ opacity: style.opacity, top: style.top + 'px' }"
     />
     <div class="list">
-      <div class="main-title">链接跳转追踪平台</div>
-      <div class="list-item">
+      <div class="main-title">{{ title }}</div>
+      <div class="list-item" v-if="version">
         <div class="title">版本</div>
-        <div class="text">v1.1.0</div>
+        <div class="text">{{ version }}</div>
       </div>
       <div class="list-item">
         <div class="title">GitHub</div>
@@ -40,10 +40,14 @@ export default {
       style: {
         opacity: 1,
         top: 160
-      }
+      },
+      title: "",
+      version: ""
     };
   },
   mounted() {
+    this.title = process.env.VUE_APP_TITLE || "链接跳转追踪";
+    this.version = process.env.VUE_APP_VERSION;
     window.onscroll = () => {
       const pos = document.documentElement.scrollTop;
       if (pos <= 400) {

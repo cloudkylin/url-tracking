@@ -28,7 +28,10 @@ export default class App extends Vue {
     const updateTime = localStorage.getItem("updateTime");
     const servers = localStorage.getItem("servers");
     if (updateTime && servers) {
-      this.$store.dispatch("updateServers", { updateTime, servers });
+      this.$store.dispatch("updateServers", {
+        updateTime,
+        servers: JSON.parse(servers)
+      });
     }
 
     // 获取更新

@@ -38,7 +38,7 @@
       </div>
     </nav>
     <div class="title">
-      <h1>链接跳转追踪</h1>
+      <h1>{{ title }}</h1>
     </div>
   </div>
 </template>
@@ -52,8 +52,10 @@ export default class Header extends Vue {
   menuList: Array<string> = [];
   activeMenu = "";
   foldVisible = false;
+  title = "";
 
   mounted() {
+    this.title = process.env.VUE_APP_TITLE || "链接跳转追踪";
     const router: { [key: string]: any } = this.$router;
     if (router.options.routes) {
       this.menuList = router.options.routes[0].children.map(
