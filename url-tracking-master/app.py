@@ -4,10 +4,8 @@ import os
 import requests
 import sqlite3
 from flask import Flask, request, jsonify, render_template, g
-from flask_restful import Api
 
 app = Flask(__name__)
-api = Api(app)
 DATABASE = 'master.sqlite'
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
