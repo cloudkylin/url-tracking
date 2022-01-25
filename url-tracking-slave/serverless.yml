@@ -1,0 +1,52 @@
+# 欢迎使用 ⚡️serverless⚡️ 组件
+#
+# serverless组件是基于具体使用场景(Express, 静态网站等)提供的定制云资源编排和组织的解决方案。
+# 这是serverless的主要配置文件，包含了一些使用示例以及注释说明。
+# 您只需几行配置描述，即可进行云函数、API 网关、COS、DB 等
+# Serverless 资源进行快速创建、部署和修改。
+#
+# 有关完整的配置选项，请检查文档：
+# https://cloud.tencent.com/document/product/1154/51080
+#
+# 👩‍💻 Happy Coding 👨‍💻
+
+# 应用组织信息
+app: url-tracking-slave-beijing-c0c3dbc3 # app名称(app唯一识别标识)。同账号下需唯一，留空则继承组件实例名称
+
+# 组件信息
+component: scf # [必选]要使用组件，更多组件请查看 https://github.com/serverless-components
+name: url-tracking-slave-beijing # [必选]组件实例名称
+
+# 组件参数配置
+# 更多内容请查看: https://github.com/serverless-components/tencent-scf/blob/master/docs/configure.md
+inputs:
+  name: ${name} # 填入您的函数名称
+  namespace: url-track
+  src:
+    src: ./
+    exclude:
+      - .env
+      - node_modules
+  type: web
+  runtime: Nodejs12.16
+  region: ap-beijing
+  description: This is a function in ${app} application.
+  memorySize: 512 # 内存大小，单位MB。为保证性能，web 函数请配置 512 MB 及以上
+  timeout: 30 # 函数执行超时时间，单位秒
+  initTimeout: 5 # 初始化超时时间，单位秒
+  publicAccess: true # 是否开启公网访问
+  installDependency: false # 是否在线安装依赖
+  cls: # 函数日志
+    logsetId: 8d13cb06-0357-4c9c-a14a-b46d6d4fbaec
+    topicId: a4f4244b-e33f-44da-bd6e-8ed7ceb864b5
+  asyncRunEnable: false # 是否启用异步执行（长时间运行）
+  events:
+    - apigw:
+        parameters:
+          protocols:
+            - http
+            - https
+          environment: release
+          endpoints:
+            - path: /
+              method: ANY

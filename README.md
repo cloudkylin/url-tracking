@@ -5,6 +5,13 @@ DEMO：[CloudKylin的Web工具箱](http://39.108.110.17:8080)
 
 ## 版本记录
 
+### Version 3
+
+> V3 版本尝试将整套系统部署在 Serverless 服务上以降低使用开销，目前仅适配腾讯云 Serverless 服务
+>
+> dev-3.0.0
+> - 完成 Slave 端 Serverless 化，使用时需先申请腾讯云 Serverless 服务并安装CLI工具。在 url-tracking-slave 目录中执行 sls deploy 即可发布生效
+
 ### Version 2
 
 > V2 版本截止目前开发进度，仅重写 Slave 端内容，其余部分使用 Version 1 中的开发内容
@@ -16,7 +23,7 @@ DEMO：[CloudKylin的Web工具箱](http://39.108.110.17:8080)
 
 > dev-1.1.0
 >
-> - 更新 Master 和 Slave，增加版本记录，并调整 Client 端请求接口；
+> - 更新 Master 和 Slave，增加版本记录，并调整 Client 端请求接口
 > 
 > - 增加 Master 的构建脚本
 >
